@@ -1,23 +1,18 @@
-import { makeStyles } from '@material-ui/core';
 // components
-import SideMenu from '../components/SideMenu';
 import Header from '../components/Header';
-
-const useStyles = makeStyles({
-  appMain: {
-    paddingLeft: '320px',
-    width: '100%',
-  },
-});
+import PageHeader from '../components/PageHeader';
+// MUI
+import PeopleOutlineTwoToneIcon from '@material-ui/icons/PeopleOutlineTwoTone';
 
 function App() {
-  const classes = useStyles();
   return (
     <>
-      <SideMenu />
-      <div className={classes.appMain}>
-        <Header />
-      </div>
+      <Header />
+      <PageHeader
+        title='Page header'
+        subTitle='Page description'
+        icon={<PeopleOutlineTwoToneIcon fontSize='large' />}
+      />
     </>
   );
 }
