@@ -1,37 +1,14 @@
-// MUI
-import {
-  Grid,
-  TextField,
-  makeStyles,
-  FormControl,
-  FormLabel,
-  RadioGroup,
-  Radio,
-  FormControlLabel,
-  InputLabel,
-  Select,
-  MenuItem,
-  Checkbox,
-  Button,
-} from '@material-ui/core';
-import {
-  MuiPickersUtilsProvider,
-  KeyboardDatePicker,
-} from '@material-ui/pickers';
-import DateFnsUtils from '@date-io/date-fns';
-// hooks
-import useForm from '../../hooks/useForm';
-// services
-import { departmentCollection } from '../../services/employeeService';
+import React from 'react';
+import { Grid } from '@material-ui/core';
+import Controls from '../../components/controls/Controls';
+import { useForm, Form } from '../../components/useForm';
+import * as employeeService from '../../services/employeeService';
 
-const useStyles = makeStyles(theme => ({
-  root: {
-    '& .MuiFormControl-root': {
-      width: '80%',
-      margin: theme.spacing(1),
-    },
-  },
-}));
+const genderItems = [
+  { id: 'male', title: 'Male' },
+  { id: 'female', title: 'Female' },
+  { id: 'other', title: 'Other' },
+];
 
 const initialFValues = {
   id: 0,
@@ -45,130 +22,111 @@ const initialFValues = {
   isPermanent: false,
 };
 
-const EmployeeForm = () => {
-  const [values, setValues, handleInputChange] = useForm(initialFValues);
+export default function EmployeeForm() {
+  const validate = (fieldValues = values) => {
+    let temp = { ...errors };
+    if ('fullName' in fieldValues)
+      temp.fullName = fieldValues.fullName ? '' : 'This field is required.';
+    if ('email' in fieldValues)
+      temp.email = /$^|.+@.+..+/.test(fieldValues.email)
+        ? ''
+        : 'Email is not valid.';
+    if ('mobile' in fieldValues)
+      temp.mobile =
+        fieldValues.mobile.length > 9 ? '' : 'Minimum 10 numbers required.';
+    if ('departmentId' in fieldValues)
+      temp.departmentId =
+        fieldValues.departmentId.length !== 0 ? '' : 'This field is required.';
+    setErrors({
+      ...temp,
+    });
 
-  const convertToDefEventPara = (name, value) => ({
-    target: { name, value },
-  });
+    if (fieldValues === values) return Object.values(temp).every(x => x === '');
+  };
 
-  const classes = useStyles();
+  const {
+    values,
+    // setValues,
+    errors,
+    setErrors,
+    handleInputChange,
+    resetForm,
+  } = useForm(initialFValues, true, validate);
+
+  const handleSubmit = e => {
+    e.preventDefault();
+    if (validate()) {
+      // do code  when form inputs are valid
+    }
+  };
+
   return (
-    <form className={classes.root} autoComplete='off'>
+    <Form onSubmit={handleSubmit}>
       <Grid container>
         <Grid item xs={6}>
-          <TextField
-            onChange={handleInputChange}
-            value={values.fullName}
+          <Controls.Input
             name='fullName'
-            variant='outlined'
             label='Full Name'
-          />
-          <TextField
+            value={values.fullName}
             onChange={handleInputChange}
-            value={values.email}
-            name='email'
-            variant='outlined'
+            error={errors.fullName}
+          />
+          <Controls.Input
             label='Email'
-            type='email'
-          />
-          <TextField
+            name='email'
+            value={values.email}
             onChange={handleInputChange}
-            value={values.mobile}
+            error={errors.email}
+          />
+          <Controls.Input
+            label='Mobile'
             name='mobile'
-            variant='outlined'
-            label='Phone number'
-            type='tel'
-          />
-          <TextField
+            value={values.mobile}
             onChange={handleInputChange}
-            value={values.city}
-            name='city'
-            variant='outlined'
+            error={errors.mobile}
+          />
+          <Controls.Input
             label='City'
+            name='city'
+            value={values.city}
+            onChange={handleInputChange}
           />
         </Grid>
         <Grid item xs={6}>
-          <FormControl component='fieldset'>
-            <FormLabel component='legend'>Gender</FormLabel>
-            <RadioGroup
-              row={true}
-              aria-label='gender'
-              name='gender'
-              value={values.gender}
-              onChange={handleInputChange}
-            >
-              <FormControlLabel
-                value='male'
-                control={<Radio color='primary' />}
-                label='Male'
-              />
-              <FormControlLabel
-                value='female'
-                control={<Radio />}
-                label='Female'
-              />
-            </RadioGroup>
-          </FormControl>
-          <FormControl variant='outlined'>
-            <InputLabel id='employee-department'>Department</InputLabel>
-            <Select
-              value={values.departmentId}
-              onChange={handleInputChange}
-              label='Department'
-              name='departmentId'
-              labelId='employee-department'
-              id='eployee-select'
-            >
-              {departmentCollection.map(({ id, title }) => (
-                <MenuItem key={id} value={title}>
-                  {title}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={values.isPermanent}
-                onChange={e =>
-                  handleInputChange(
-                    convertToDefEventPara('isPermanent', e.target.checked)
-                  )
-                }
-                name='isPermanent'
-                color='primary'
-              />
-            }
-            label='Is permanent'
+          <Controls.RadioGroup
+            name='gender'
+            label='Gender'
+            value={values.gender}
+            onChange={handleInputChange}
+            items={genderItems}
           />
-          <MuiPickersUtilsProvider utils={DateFnsUtils}>
-            <KeyboardDatePicker
-              name='hireDate'
-              value={values.hireDate}
-              onChange={date =>
-                handleInputChange(convertToDefEventPara('hireDate', date))
-              }
-              disableToolbar
-              variant='inline'
-              inputVariant='outlined'
-              minDate={new Date()}
-              format='MM/dd/yyyy'
-              label='Hire date'
-            />
-          </MuiPickersUtilsProvider>
-          <Button
-            variant='contained'
-            size='large'
-            color='primary'
-            type='submit'
-          >
-            Add employee
-          </Button>
+          <Controls.Select
+            name='departmentId'
+            label='Department'
+            value={values.departmentId}
+            onChange={handleInputChange}
+            options={employeeService.getDepartmentCollection()}
+            error={errors.departmentId}
+          />
+          <Controls.DatePicker
+            name='hireDate'
+            label='Hire Date'
+            value={values.hireDate}
+            onChange={handleInputChange}
+          />
+          <Controls.Checkbox
+            name='isPermanent'
+            label='Permanent Employee'
+            value={values.isPermanent}
+            onChange={handleInputChange}
+          />
+
+          <div>
+            <Controls.Button type='submit' text='Submit' />
+            <Controls.Button text='Reset' color='default' onClick={resetForm} />
+          </div>
         </Grid>
       </Grid>
-    </form>
+    </Form>
   );
-};
-
-export default EmployeeForm;
+}
