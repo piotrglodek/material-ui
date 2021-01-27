@@ -56,7 +56,8 @@ export default function EmployeeForm() {
   const handleSubmit = e => {
     e.preventDefault();
     if (validate()) {
-      // do code  when form inputs are valid
+      employeeService.insertEmployee(values);
+      resetForm();
     }
   };
 
