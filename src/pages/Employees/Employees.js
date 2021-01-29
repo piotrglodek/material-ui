@@ -57,8 +57,14 @@ const Employees = () => {
         if (value === '') {
           return items;
         } else {
-          return items.filter(x =>
-            x.fullName.toLowerCase().includes(value.toLowerCase())
+          // return items.filter(x =>
+          //   x.fullName.toLowerCase().includes(value.toLowerCase())
+          // );
+          return items.filter(
+            x =>
+              x.fullName.toLowerCase().includes(value.toLowerCase()) ||
+              x.mobile.toLowerCase().includes(value.toLowerCase()) ||
+              x.email.toLowerCase().includes(value.toLowerCase())
           );
         }
       },
