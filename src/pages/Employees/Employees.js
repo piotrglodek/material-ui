@@ -33,6 +33,10 @@ const useStyles = makeStyles(theme => ({
   searchInput: {
     width: '75%',
   },
+  newBtn: {
+    position: 'absolute',
+    right: '10px',
+  },
 }));
 
 const Employees = () => {
@@ -93,10 +97,17 @@ const Employees = () => {
             InputProps={{
               startAdornment: (
                 <InputAdornment position='start'>
-                  <Search />
+                  <SearchIcon />
                 </InputAdornment>
               ),
             }}
+          />
+          <Controls.Button
+            text='Add New'
+            variant='outlined'
+            startIcon={<AddIcon />}
+            className={classes.newBtn}
+            onClick={() => setOpenPopup(true)}
           />
         </Toolbar>
         <TblContainer>
