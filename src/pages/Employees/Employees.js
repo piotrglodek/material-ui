@@ -49,6 +49,7 @@ const Employees = () => {
     { id: 'department', label: 'Department', disableSorting: true },
     { id: 'actions', label: 'Actions', disableSorting: true },
   ];
+  const [recordForEdit, setRecordForEdit] = useState(null);
   const [records, setRecords] = useState(employeeService.getAllEmployees());
   const [filterFn, setFilterFn] = useState({
     fn: items => {
@@ -85,10 +86,20 @@ const Employees = () => {
   const [openPopup, setOpenPopup] = useState(false);
 
   const addOrEdit = (employee, resetForm) => {
-    employeeService.insertEmployee(employee);
+    if (employee.id === 0) {
+      employeeService.insertEmployee(employee);
+    } else {
+      employeeService.updateEmployee(employee);
+    }
     resetForm();
+    setRecordForEdit(null);
     setOpenPopup(false);
     setRecords(employeeService.getAllEmployees());
+  };
+
+  const openInPopup = item => {
+    setRecordForEdit(item);
+    setOpenPopup(true);
   };
   return (
     <>
@@ -116,7 +127,10 @@ const Employees = () => {
             variant='outlined'
             startIcon={<AddIcon />}
             className={classes.newBtn}
-            onClick={() => setOpenPopup(true)}
+            onClick={() => {
+              setOpenPopup(true);
+              setRecordForEdit(null);
+            }}
           />
         </Toolbar>
         <TblContainer>
@@ -129,7 +143,10 @@ const Employees = () => {
                 <TableCell>{item.mobile}</TableCell>
                 <TableCell>{item.department.title}</TableCell>
                 <TableCell>
-                  <Controls.ActionButton color='primary'>
+                  <Controls.ActionButton
+                    onClick={() => openInPopup(item)}
+                    color='primary'
+                  >
                     <EditOutlinedIcon fontSize='small' />
                   </Controls.ActionButton>
                   <Controls.ActionButton color='secondary'>
@@ -147,7 +164,7 @@ const Employees = () => {
         openPopup={openPopup}
         setOpenPopup={setOpenPopup}
       >
-        <EmployeeForm addOrEdit={addOrEdit} />
+        <EmployeeForm recordForEdit={recordForEdit} addOrEdit={addOrEdit} />
       </Popup>
     </>
   );
