@@ -47,6 +47,7 @@ const Employees = () => {
     { id: 'email', label: 'Email Adress' },
     { id: 'mobile', label: 'Mobile Number' },
     { id: 'department', label: 'Department', disableSorting: true },
+    { id: 'actions', label: 'Actions', disableSorting: true },
   ];
   const [records, setRecords] = useState(employeeService.getAllEmployees());
   const [filterFn, setFilterFn] = useState({
@@ -119,6 +120,14 @@ const Employees = () => {
                 <TableCell>{item.email}</TableCell>
                 <TableCell>{item.mobile}</TableCell>
                 <TableCell>{item.department.title}</TableCell>
+                <TableCell>
+                  <Controls.ActionButton color='primary'>
+                    <EditOutlinedIcon fontSize='small' />
+                  </Controls.ActionButton>
+                  <Controls.ActionButton color='secondary'>
+                    <CloseIcon fontSize='small' />
+                  </Controls.ActionButton>
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
