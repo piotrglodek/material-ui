@@ -98,7 +98,6 @@ const Employees = () => {
         icon={<PeopleOutlineTwoToneIcon fontSize='large' />}
       />
       <Paper className={classes.pageContent}>
-        {/* <EmployeeForm /> */}
         <Toolbar>
           <Controls.Input
             onChange={handleSearch}
