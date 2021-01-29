@@ -125,6 +125,13 @@ const Employees = () => {
         </TblContainer>
         <TblPagination />
       </Paper>
+      <Popup
+        title='Employee Form'
+        openPopup={openPopup}
+        setOpenPopup={setOpenPopup}
+      >
+        <EmployeeForm addOrEdit={addOrEdit} />
+      </Popup>
     </>
   );
 };
