@@ -81,6 +81,15 @@ const Employees = () => {
       },
     });
   };
+
+  const [openPopup, setOpenPopup] = useState(false);
+
+  const addOrEdit = (employee, resetForm) => {
+    employeeService.insertEmployee(employee);
+    resetForm();
+    setOpenPopup(false);
+    setRecords(employeeService.getAllEmployees());
+  };
   return (
     <>
       <PageHeader
