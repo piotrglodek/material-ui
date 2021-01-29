@@ -15,8 +15,13 @@ import {
   Toolbar,
   InputAdornment,
 } from '@material-ui/core';
-import PeopleOutlineTwoToneIcon from '@material-ui/icons/PeopleOutlineTwoTone';
-import { Search } from '@material-ui/icons';
+import {
+  Search as SearchIcon,
+  EditOutlined as EditOutlinedIcon,
+  Close as CloseIcon,
+  Add as AddIcon,
+  PeopleOutlineTwoTone as PeopleOutlineTwoToneIcon,
+} from '@material-ui/icons';
 // services
 import * as employeeService from '../../services/employeeService';
 
